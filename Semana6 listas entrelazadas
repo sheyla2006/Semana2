@@ -1,0 +1,115 @@
+using System;
+using System.Collections.Generic;
+
+namespace EjercicioListasEnlazadas
+{
+    // Definición del Nodo
+    class Nodo
+    {
+        public double Valor;
+        public Nodo Siguiente;
+
+        public Nodo(double valor)
+        {
+            Valor = valor;
+            Siguiente = null;
+        }
+    }
+
+    // Clase para manejar la Lista Enlazada
+    class ListaEnlazada
+    {
+        public Nodo Cabeza;
+
+        public void Insertar(double valor)
+        {
+            Nodo nuevoNodo = new Nodo(valor);
+            if (Cabeza == null)
+            {
+                Cabeza = nuevoNodo;
+            }
+            else
+            {
+                Nodo actual = Cabeza;
+                while (actual.Siguiente != null)
+                {
+                    actual = actual.Siguiente;
+                }
+                actual.Siguiente = nuevoNodo;
+            }
+        }
+
+        public void Mostrar()
+        {
+            Nodo actual = Cabeza;
+            while (actual != null)
+            {
+                Console.Write($"[{actual.Valor}] ");
+                actual = actual.Siguiente;
+            }
+            Console.WriteLine();
+        }
+
+        public double CalcularPromedio(int n)
+        {
+            if (n == 0) return 0;
+            double suma = 0;
+            Nodo actual = Cabeza;
+            while (actual != null)
+            {
+                suma += actual.Valor;
+                actual = actual.Siguiente;
+            }
+            return suma / n;
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ListaEnlazada listaPrincipal = new ListaEnlazada();
+            ListaEnlazada listaMenoresIguales = new ListaEnlazada();
+            ListaEnlazada listaMayores = new ListaEnlazada();
+
+            Console.Write("Ingrese la cantidad de datos (N): ");
+            int n = int.Parse(Console.ReadLine());
+
+            // a. Carga de datos
+            for (int i = 0; i < n; i++)
+            {
+                Console.Write($"Ingrese el dato {i + 1}: ");
+                double valor = double.Parse(Console.ReadLine());
+                listaPrincipal.Insertar(valor);
+            }
+
+            // b. Calcular promedio
+            double promedio = listaPrincipal.CalcularPromedio(n);
+
+            // c y d. Clasificar datos
+            Nodo actual = listaPrincipal.Cabeza;
+            while (actual != null)
+            {
+                if (actual.Valor <= promedio)
+                    listaMenoresIguales.Insertar(actual.Valor);
+                else
+                    listaMayores.Insertar(actual.Valor);
+                
+                actual = actual.Siguiente;
+            }
+
+            // Mostrar Resultados
+            Console.WriteLine("\n--- RESULTADOS ---");
+            Console.WriteLine("a. Datos en la lista principal:");
+            listaPrincipal.Mostrar();
+
+            Console.WriteLine($"\nb. Promedio: {promedio:F2}");
+
+            Console.WriteLine("\nc. Datos menores o iguales al promedio:");
+            listaMenoresIguales.Mostrar();
+
+            Console.WriteLine("\nd. Datos mayores al promedio:");
+            listaMayores.Mostrar();
+        }
+    }
+}
