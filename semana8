@@ -1,0 +1,49 @@
+using System;
+using System.Collections.Generic;
+
+namespace SistemaAtraccion
+{
+    // Clase que representa a la entidad
+    public class Persona
+    {
+        public int Id { get; set; }
+        public string Nombre { get; set; }
+        public DateTime HoraLlegada { get; set; }
+
+        public override string ToString() => $"[Asiento {Id}] - {Nombre} (Llegada: {HoraLlegada.ToLongTimeString()})";
+    }
+
+    // Clase que gestiona la lógica de la estructura de datos
+    public class ControlAtraccion
+    {
+        private Queue<Persona> colaEspera = new Queue<Persona>();
+        private const int MaxAsientos = 30;
+        private int contadorAsientos = 0;
+
+        public bool RegistrarPersona(string nombre)
+        {
+            if (contadorAsientos < MaxAsientos)
+            {
+                contadorAsientos++;
+                var nuevaPersona = new Persona { 
+                    Id = contadorAsientos, 
+                    Nombre = nombre, 
+                    HoraLlegada = DateTime.Now 
+                };
+                colaEspera.Enqueue(nuevaPersona);
+                return true;
+            }
+            return false;
+        }
+
+        public void ReporteGeneral()
+        {
+            Console.WriteLine("\n--- REPORTE DE OCUPACIÓN ---");
+            foreach (var p in colaEspera)
+            {
+                Console.WriteLine(p.ToString());
+            }
+            Console.WriteLine($"Total: {colaEspera.Count}/{MaxAsientos} asientos.");
+        }
+    }
+}
