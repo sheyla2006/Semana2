@@ -1,0 +1,65 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace CampanaVacunacion
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // 1. Generar el universo de 500 ciudadanos
+            HashSet<string> universo = new HashSet<string>();
+            for (int i = 1; i <= 500; i++) universo.Add($"Ciudadano {i}");
+
+            // 2. Generar ciudadanos vacunados con Pfizer (75)
+            HashSet<string> pfizer = new HashSet<string>();
+            for (int i = 1; i <= 75; i++) pfizer.Add($"Ciudadano {i}");
+
+            // 3. Generar ciudadanos vacunados con AstraZeneca (75)
+            // Nota: Del 1 al 75, algunos se solapan para simular "ambas dosis"
+            HashSet<string> astraZeneca = new HashSet<string>();
+            for (int i = 50; i <= 124; i++) astraZeneca.Add($"Ciudadano {i}");
+
+            // --- OPERACIONES DE TEORÍA DE CONJUNTOS ---
+
+            // A. Ciudadanos que no se han vacunado (Universo - Unión de ambos)
+            HashSet<string> todosVacunados = new HashSet<string>(pfizer);
+            todosVacunados.UnionWith(astraZeneca);
+            
+            HashSet<string> noVacunados = new HashSet<string>(universo);
+            noVacunados.ExceptWith(todosVacunados);
+
+            // B. Ciudadanos con ambas dosis (Intersección)
+            HashSet<string> ambasDosis = new HashSet<string>(pfizer);
+            ambasDosis.IntersectWith(astraZeneca);
+
+            // C. Solo Pfizer (Diferencia: Pfizer - AstraZeneca)
+            HashSet<string> soloPfizer = new HashSet<string>(pfizer);
+            soloPfizer.ExceptWith(astraZeneca);
+
+            // D. Solo AstraZeneca (Diferencia: AstraZeneca - Pfizer)
+            HashSet<string> soloAstra = new HashSet<string>(astraZeneca);
+            soloAstra.ExceptWith(pfizer);
+
+            // --- MOSTRAR RESULTADOS ---
+            MostrarResultados("NO VACUNADOS", noVacunados.Take(10)); // Muestra primeros 10 por brevedad
+            Console.WriteLine($"Total: {noVacunados.Count}\n");
+
+            MostrarResultados("DOS DOSIS (Pfizer + AstraZeneca)", ambasDosis);
+            Console.WriteLine($"Total: {ambasDosis.Count}\n");
+
+            MostrarResultados("SOLO PFIZER", soloPfizer);
+            Console.WriteLine($"Total: {soloPfizer.Count}\n");
+
+            MostrarResultados("SOLO ASTRAZENECA", soloAstra);
+            Console.WriteLine($"Total: {soloAstra.Count}\n");
+        }
+
+        static void MostrarResultados(string titulo, IEnumerable<string> lista)
+        {
+            Console.WriteLine($"--- {titulo} ---");
+            foreach (var item in lista) Console.WriteLine(item);
+        }
+    }
+}
